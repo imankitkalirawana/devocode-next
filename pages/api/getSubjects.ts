@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { connectDB } from "../utils/db";
 import Subject from "./models/Subjects";
-
+import { connectDB } from "@/utils/db";
 connectDB();
 
 // get subject api
