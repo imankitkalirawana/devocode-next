@@ -1,0 +1,124 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 1rem;
+  padding: 25px;
+  margin: 3rem auto;
+  margin-top: calc(3rem + 64px);
+}
+.section-title {
+  text-transform: capitalize;
+  font-size: 24px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.resources .section-title {
+  text-align: start;
+}
+
+.section-menu {
+  display: grid;
+  position: relative;
+  grid-gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.section-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 1rem;
+  background: var(--lighter-1);
+  cursor: pointer;
+  max-width: 350px;
+  user-select: none;
+}
+
+.section-card:hover {
+  background: var(--lighter);
+}
+
+.section-card-upper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.section-card-upper-left {
+  display: flex;
+  align-items: center;
+  grid-gap: 1rem;
+}
+
+.section-card-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  grid-gap: 5px;
+}
+
+.section-card-title-short {
+  text-transform: capitalize;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.section-card-title {
+  font-size: 14px;
+  color: var(--faded);
+  font-weight: 300;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 225px;
+}
+
+.section-card .btn {
+  background: var(--lighter-2);
+  cursor: pointer;
+}
+
+.section-card .btn:hover {
+  background: var(--light);
+}
+
+.section-card-lower {
+  font-size: 12px;
+  color: var(--faded);
+  display: flex;
+  justify-content: space-between;
+}
+
+.section-card-btn {
+  position: relative;
+}
+
+.section-dropdown-content {
+  position: absolute;
+  background: var(--light);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  width: 184px;
+  right: 0;
+  display: none;
+}
+
+.section-dropdown-item {
+  padding: 8px 12px;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.section-dropdown-item:hover {
+  background: var(--lighter);
+  border-radius: 6px;
+}
+
+.section-card-btn:hover .section-dropdown-content {
+  display: flex;
+}

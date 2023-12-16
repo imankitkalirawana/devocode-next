@@ -1,0 +1,32 @@
+/your-nextjs-app
+  /app          // Backend server code
+    /src       // TypeScript source files
+      server.ts  // Express.js server
+      routes/    // API route handlers
+        api.ts   // Example API route
+      models/    // Database models (if applicable)
+        User.ts  // Example model
+    /dist      // Compiled TypeScript files (output directory)
+    package.json
+    tsconfig.json  // TypeScript configuration
+    .env      // Environment variables (optional)
+  /public       // Public assets accessible from the frontend
+    images/
+    styles/
+    ...
+  /src          // Frontend TypeScript source files
+    /pages      // Next.js pages for the frontend
+      index.tsx // Main page
+      about.tsx // Example additional page
+    /components // Reusable React components
+      Header.tsx
+      Footer.tsx
+    /lib        // Utility functions or shared logic
+      api.ts    // Functions to interact with the backend API
+    /styles     // Global styles
+      globals.css
+  /node_modules
+  package.json
+  .env          // Environment variables (optional)
+  next.config.js
+  README.md

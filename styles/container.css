@@ -1,0 +1,164 @@
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.container-fluid {
+  padding: 1rem;
+  margin: auto;
+  margin-top: calc(1rem + 64px);
+  max-width: 1236px;
+}
+
+.container-fluid:not(input, textarea) {
+  user-select: none;
+}
+
+.container-narrative {
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.container-narrative h1 {
+  font-size: 40px;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.container-narrative p {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--faded);
+}
+
+.container-stack-horizontal {
+  display: flex;
+  align-items: flex-start;
+  grid-gap: 1rem;
+  margin-top: 2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.stack-title-card {
+  display: flex;
+  align-items: center;
+  grid-gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--lighter);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 24px;
+  width: 288px;
+}
+
+.stack-title-card h1 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.stack-details {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 7px;
+}
+
+.stack-progress {
+  display: flex;
+  align-items: flex-start;
+}
+
+.progress-line {
+  width: 2px;
+  height: 40px;
+  background: var(--border);
+  position: relative;
+  transform: translateY(10px);
+}
+
+.progress-line::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--border);
+  border-radius: 50%;
+  top: -5px;
+  left: -3px;
+  transition: 0.3s ease;
+}
+
+.stack-name {
+  margin-left: 1rem;
+  font-size: 14px;
+  color: var(--border);
+  text-transform: capitalize;
+  transition: 0.3s ease;
+}
+
+.stack-details .stack-progress:nth-child(1) .progress-line::before {
+  background: var(--dark);
+}
+
+.stack-details .stack-progress:nth-child(1) .stack-name {
+  color: var(--dark);
+}
+
+.stack-details .stack-progress:last-child .progress-line {
+  height: 0px;
+}
+
+.stack-details .stack-progress:hover .stack-name {
+  color: var(--primary);
+}
+
+.stack-details .stack-progress:hover .progress-line::before {
+  background: var(--primary);
+}
+
+.container-card-cover {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  grid-gap: 1rem;
+}
+
+.container-card {
+  border: 1px solid var(--border);
+  padding: 32px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.container-card:last-child {
+  margin-bottom: 10rem;
+}
+
+.container-card-danger {
+  border-color: var(--danger);
+}
+
+@media (max-width: 768px) {
+  .container-stack-horizontal {
+    flex-direction: column;
+  }
+
+  .container-sidebar {
+    display: flex;
+    width: 100%;
+  }
+
+  .stack-title-card {
+    width: 100%;
+  }
+
+  .container-sidebar .divider-horizontal {
+    display: none;
+  }
+
+  .stack-details {
+    display: none;
+  }
+}
