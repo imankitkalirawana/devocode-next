@@ -1,16 +1,15 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import styles from "./page.module.css";
 import axios from "axios";
 import Link from "next/link";
 
 interface Subject {
+  code: string;
   title: string;
   _id: string;
 }
 
-export default function Home() {
+export default function Resources() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
@@ -26,20 +25,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <div className="card card-auth">
-          <Link href="/auth/login">Login</Link>
-          <Link href="/auth/register">Register</Link>
-        </div>
-        <div className="card">
-          <h1 className={styles.title}>Subjects</h1>
-
-          {subjects.map((subject, index) => (
-            <li key={index}>{subject.title}</li>
-          ))}
-        </div>
-      </main>
+    <div>
+      <h1>Resources</h1>
+      <ul>
+        {subjects.map((subject, index) => (
+          <Link key={index} href={`/resources/${subject._id}`}>
+            <li>{subject.code}</li>
+          </Link>
+        ))}
+      </ul>
     </div>
   );
 }
