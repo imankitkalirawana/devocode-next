@@ -29,7 +29,7 @@ export default function Subject({ params }: SubjectPageProps) {
       }
     };
     fetchSubject();
-  }, []);
+  }, [params.subjectId]);
 
   return (
     <div>
