@@ -1,7 +1,19 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+import { isLoggedIn } from "../auth/authUtils";
 
 const Admin = () => {
+  const { loggedIn, user } = isLoggedIn();
+  useEffect(() => {
+    if (!loggedIn || !user) {
+      window.location.href = "/auth/login";
+      return;
+    }
+    if (loggedIn && user.role !== "admin") {
+      window.location.href = "/resources";
+    }
+  }, [loggedIn, user]);
+
   //  handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
