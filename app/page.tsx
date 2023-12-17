@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import axios from "axios";
 import Link from "next/link";
+import "./globals.css";
 
 interface Subject {
   title: string;
@@ -29,7 +30,9 @@ export default function Home() {
     <div className={styles.container}>
       <main className={styles.main}>
         <div className="card card-auth">
-          <Link href="/auth/login">Login</Link>
+          <Link className="btn " href="/auth/login">
+            Login
+          </Link>
           <Link href="/auth/register">Register</Link>
         </div>
         <div className="card">

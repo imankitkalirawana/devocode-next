@@ -29,7 +29,7 @@ export default function Resources() {
       <h1>Resources</h1>
       <ul>
         {subjects.map((subject, index) => (
-          <Link key={index} href={`/resources/${subject._id}`}>
+          <Link key={index} href={`/resources/resourceType/${subject._id}`}>
             <li>{subject.code}</li>
           </Link>
         ))}

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 interface Subject {
   code: string;
   title: string;
+  description: string;
   _id: string;
 }
 
