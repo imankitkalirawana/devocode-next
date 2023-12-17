@@ -30,7 +30,7 @@
     "cors.js",
     "pages/api/subjects/subject.js",
     "pages/api/status.ts",
-    "pages/models/Subjects.js"
+    "models/Subjects.js"
   ],
   "exclude": ["node_modules"]
 }

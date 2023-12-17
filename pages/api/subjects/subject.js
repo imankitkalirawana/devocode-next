@@ -1,4 +1,4 @@
-import Subject from "../../models/Subjects";
+import Subject from "@/models/Subjects";
 import { connectDB } from "@/utils/db";
 import verifyToken from "@/middleware/verifyToken";
 import cors from "@/cors";
