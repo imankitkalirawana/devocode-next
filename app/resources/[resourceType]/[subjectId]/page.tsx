@@ -27,7 +27,7 @@ interface Resource {
   addedDate: Date;
 }
 
-const page = ({ params }: SubjectPageProps) => {
+const Resource = ({ params }: SubjectPageProps) => {
   const { subjectId, resourceType } = params;
   const [subject, setSubject] = useState<Subject>();
   const [resources, setResources] = useState<Resource[]>([]);
@@ -79,4 +79,4 @@ const page = ({ params }: SubjectPageProps) => {
   );
 };
 
-export default page;
+export default Resource;
