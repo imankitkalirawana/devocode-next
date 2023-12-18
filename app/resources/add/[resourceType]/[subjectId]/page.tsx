@@ -85,6 +85,23 @@ const Page = ({ params }: PageProps) => {
       setResource({ ...resource, file: file.name, filesize: fileSizeInMB });
     }
   };
+  // upload file function to /api/file/user api
+  const uploadFile = async () => {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await axios.post("/api/file/user", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log(response.data);
+      console.log("File uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   //   handle submit
   const handleSubmit = () => {
     axios
@@ -98,6 +115,7 @@ const Page = ({ params }: PageProps) => {
         }
       )
       .then((response) => {
+        uploadFile();
         console.log(response.data);
       })
       .catch((error) => console.error("Error adding resource:", error));

@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import { isLoggedIn } from "@/utils/authUtils";
+import { useRouter } from "next/navigation";
 
 interface SubjectPageProps {
   params: {
@@ -36,36 +37,69 @@ const Resource = ({ params }: SubjectPageProps) => {
   const [resources, setResources] = useState<Resource[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { loggedIn } = isLoggedIn();
+  const router = useRouter();
 
   // fetch subjects from api
+  const fetchSubject = async () => {
+    try {
+      const response = await axios.get(
+        `/api/subjects/subject?id=${params.subjectId}`
+      );
+      setSubject(response.data);
+    } catch (error) {
+      console.error("Error fetching subject:", error);
+    }
+  };
+  const fetchResources = async () => {
+    try {
+      const response = await axios.get(
+        `/api/subjects/resource?subjectId=${params.subjectId}&resourceType=${params.resourceType}`
+      );
+      setResources(response.data);
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const response = await axios.get(
-          `/api/subjects/subject?id=${params.subjectId}`
-        );
-        setSubject(response.data);
-      } catch (error) {
-        console.error("Error fetching subject:", error);
-      }
-    };
     fetchSubject();
-
-    const fetchResources = async () => {
-      try {
-        const response = await axios.get(
-          `/api/subjects/resource?subjectId=${params.subjectId}&resourceType=${params.resourceType}`
-        );
-        setResources(response.data);
-      } catch (error) {
-        console.error("Error fetching resources:", error);
-      }
-    };
     fetchResources();
-  }, [params.subjectId, params.resourceType]);
+  }, []);
 
-  // fetch resources from api
+  const handleDelete = (id: string) => {
+    return () => {
+      axios
+        .delete(
+          `/api/subjects/resource?resourceType=${resourceType}&resourceId=${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
+        .then(() => {
+          fetchResources();
+          router.push(`/resources/${resourceType}/${subjectId}`);
+        })
+        .catch((error) => {
+          console.error("Error deleting resource:", error);
+        });
+    };
+  };
+
+  const handleDownload = async (filename: any) => {
+    if (filename === undefined) return console.error("No file to download");
+    const response = await fetch(`api/file/user?filename=${filename}`);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <>
@@ -139,15 +173,14 @@ const Resource = ({ params }: SubjectPageProps) => {
                       <div className="section-dropdown-content">
                         <a
                           className="section-dropdown-item"
-                          // href={`${API_BASE_URL}/uploads/${file.file}`}
+                          href={`/api/file/file?filename=${resource.file}`}
                           target="_blank"
                         >
                           View
                         </a>
                         <a
                           className="section-dropdown-item"
-                          // href={`${API_BASE_URL}/uploads/${file.file}`}
-                          // onClick={() => handleDownload(file.file)}
+                          onClick={() => handleDownload(resource.file)}
                         >
                           Download
                         </a>
@@ -156,7 +189,7 @@ const Resource = ({ params }: SubjectPageProps) => {
                           <>
                             <Link
                               className="section-dropdown-item"
-                              href={`/resources/update/${resourceType}/update/${resource._id}`}
+                              href={`/resources/update/${resourceType}/${resource._id}`}
                             >
                               Edit
                             </Link>
@@ -179,7 +212,7 @@ const Resource = ({ params }: SubjectPageProps) => {
                                   <div className="popup-btns">
                                     <button
                                       className="btn btn-danger"
-                                      // onClick={handleDelete(file._id)}
+                                      onClick={handleDelete(resource._id)}
                                     >
                                       Delete
                                     </button>

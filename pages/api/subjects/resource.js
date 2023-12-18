@@ -226,6 +226,7 @@ export default async (req, res) => {
       } else if (req.method === "DELETE") {
         try {
           const { resourceType, resourceId } = req.query;
+          console.log(resourceType, resourceId);
           let resourceData = null;
           switch (resourceType) {
             // Handle each resource type
