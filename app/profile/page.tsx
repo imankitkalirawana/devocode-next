@@ -1,7 +1,29 @@
+"use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Popup from "reactjs-popup";
+import axios from "axios";
 
 const Profile = () => {
+  const [files, setFiles] = useState([]);
+  // get data from api/file/admin
+  const fetchFiles = async () => {
+    try {
+      const response = await axios.get("/api/file/viewAll", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setFiles(response.data.files);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching files:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
   return (
     <div className="container-fluid">
       <div className="container-stack">
@@ -128,6 +150,126 @@ const Profile = () => {
                 >
                   Update
                 </button>
+              </div>
+            </div>
+          </div>
+          <div className="container-card">
+            <div className="container-card-header">
+              <h2>Backup and Restore</h2>
+            </div>
+            <hr className="divider-horizontal" />
+            <div className="container-card-form form">
+              <div className="form-input">
+                <label htmlFor="restore">Restore (Only Zip)</label>
+                <input
+                  type="file"
+                  id="restore"
+                  name="restore"
+                  //   onChange={handleRestoreInput}
+                />
+              </div>
+              <div className="form-input form-btns">
+                <button
+                  className="btn"
+                  //  onClick={download}
+                >
+                  Backup
+                </button>
+                <Popup
+                  trigger={<button className="btn btn-primary">Restore</button>}
+                >
+                  <div className="popup">
+                    <div className="popup-upper">
+                      <div className="popup-title">Restore</div>
+                      <div className="popup-message">
+                        Restoring data may replace your existing files. Are you
+                        sure?
+                      </div>
+                    </div>
+                    <hr className="divider-horizontal" />
+                    <div className="popup-btns">
+                      <button
+                        className="btn btn-danger"
+                        //    onClick={restore}
+                      >
+                        Restore
+                      </button>
+                    </div>
+                  </div>
+                </Popup>
+              </div>
+            </div>
+          </div>
+          <div className="container-card container-card-danger">
+            <div className="container-card-header">
+              <h2>Delete all files</h2>
+            </div>
+            <hr className="divider-horizontal" />
+            <div className="container-card-form form">
+              <div className="form-input">
+                <p>
+                  This action will delete all the files present in the database.
+                </p>
+              </div>
+              <hr className="divider-horizontal no-margin" />
+              <div className="form-input form-btns">
+                <Popup
+                  trigger={
+                    <button className="btn btn-danger">Delete all files</button>
+                  }
+                >
+                  <div className="popup">
+                    <div className="popup-upper">
+                      <div className="popup-title">Delete</div>
+                      <div className="popup-message">
+                        Are you sure you want to delete all files?
+                      </div>
+                      <div className="form-input">
+                        <input
+                          type="text"
+                          id="confirm"
+                          name="confirm"
+                          placeholder="Type 'confirm' to delete"
+                          onChange={(e) => {
+                            if (e.target.value === "confirm") {
+                              //   setCanDelete(true);
+                            } else {
+                              //   setCanDelete(false);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <hr className="divider-horizontal" />
+                    <div className="popup-btns">
+                      <button
+                        className="btn btn-danger"
+                        // onClick={deleteAll}
+                        // disabled={!canDelete}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </Popup>
+              </div>
+            </div>
+          </div>
+          <div className="container-card">
+            <div className="container-card-header">
+              <h2>View Available Files</h2>
+            </div>
+            <hr className="divider-horizontal" />
+            <div className="container-card-form form">
+              <div className="form-input">
+                <ul>
+                  {files.map((fileName, index) => (
+                    <li key={index}>
+                      {index + 1}:- {fileName}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
