@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { set } from "mongoose";
 
 interface PageProps {
   params: {
@@ -30,7 +29,7 @@ interface Subject {
   _id: string;
 }
 
-const page = ({ params }: PageProps) => {
+const Page = ({ params }: PageProps) => {
   const { resourceType, subjectId } = params;
   const { loggedIn } = isLoggedIn();
   const [resource, setResource] = useState<Resource>({} as Resource);
@@ -195,4 +194,4 @@ const page = ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default Page;

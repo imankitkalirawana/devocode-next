@@ -23,7 +23,7 @@ interface Resource {
   };
 }
 
-const page = ({ params }: PageProps) => {
+const Page = ({ params }: PageProps) => {
   const { resourceId, resourceType } = params;
   const [resource, setResource] = useState<Resource>({} as Resource);
   const loggedIn = isLoggedIn();
@@ -190,4 +190,4 @@ const page = ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default Page;
