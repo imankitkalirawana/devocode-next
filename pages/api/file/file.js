@@ -16,30 +16,6 @@ const upload = multer({
 }).single("file");
 
 export default async function handler(req, res) {
-  if (req.method === "GET") {
-    // download file from server
-    const { filename } = req.query;
-    if (!filename) {
-      return res.status(400).json({ error: "Filename is required." });
-    }
-
-    const filePath = path.join(process.cwd(), "public/uploads", filename);
-    // check if file exists
-    if (fs.existsSync(filePath)) {
-      // Read the file content
-      const fileContent = fs.readFileSync(filePath);
-
-      // Set appropriate headers
-      res.setHeader("Content-Type", "application/octet-stream");
-      res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
-
-      // Send the file content
-      res.send(fileContent);
-    } else {
-      res.status(404).json({ error: "File not found." });
-    }
-    return;
-  }
   verifyToken(req, res, async () => {
     if (req.method === "POST") {
       // upload file to server

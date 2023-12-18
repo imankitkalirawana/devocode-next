@@ -66,7 +66,7 @@ const Resource = ({ params }: SubjectPageProps) => {
     fetchResources();
   }, []);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string, filename: string) => {
     return () => {
       axios
         .delete(
@@ -78,8 +78,16 @@ const Resource = ({ params }: SubjectPageProps) => {
           }
         )
         .then(() => {
-          fetchResources();
-          router.push(`/resources/${resourceType}/${subjectId}`);
+          axios
+            .delete(`/api/file/file?filename=${filename}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+            .then(() => {
+              fetchResources();
+              router.push(`/resources/${resourceType}/${subjectId}`);
+            });
         })
         .catch((error) => {
           console.error("Error deleting resource:", error);
@@ -89,7 +97,7 @@ const Resource = ({ params }: SubjectPageProps) => {
 
   const handleDownload = async (filename: any) => {
     if (filename === undefined) return console.error("No file to download");
-    const response = await fetch(`api/file/user?filename=${filename}`);
+    const response = await fetch(`api/file/view?filename=${filename}`);
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
 
@@ -173,7 +181,7 @@ const Resource = ({ params }: SubjectPageProps) => {
                       <div className="section-dropdown-content">
                         <a
                           className="section-dropdown-item"
-                          href={`/api/file/file?filename=${resource.file}`}
+                          href={`/api/file/view?filename=${resource.file}`}
                           target="_blank"
                         >
                           View
@@ -212,7 +220,10 @@ const Resource = ({ params }: SubjectPageProps) => {
                                   <div className="popup-btns">
                                     <button
                                       className="btn btn-danger"
-                                      onClick={handleDelete(resource._id)}
+                                      onClick={handleDelete(
+                                        resource._id,
+                                        resource.file
+                                      )}
                                     >
                                       Delete
                                     </button>

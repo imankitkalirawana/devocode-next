@@ -29,6 +29,12 @@ const Page = ({ params }: PageProps) => {
   const loggedIn = isLoggedIn();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!loggedIn) {
+      router.push("/login");
+    }
+  }, []);
+
   const handleInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -80,8 +86,18 @@ const Page = ({ params }: PageProps) => {
         }
       )
       .then((response) => {
-        console.log("response:", response);
-        router.push(`/resources/${resourceType}/${resource.subject.$oid}`);
+        axios
+          .delete(`/api/file/file?filename=${resource.file}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .then(() => {
+            router.back();
+          })
+          .catch((error) => {
+            console.error("Error deleting file:", error);
+          });
       });
   };
   return (
@@ -168,10 +184,7 @@ const Page = ({ params }: PageProps) => {
                     </div>
                     <hr className="divider-horizontal" />
                     <div className="popup-btns">
-                      <button
-                        className="btn btn-danger"
-                        // onClick={handleDelete}
-                      >
+                      <button className="btn btn-danger" onClick={handleDelete}>
                         Delete
                       </button>
                     </div>

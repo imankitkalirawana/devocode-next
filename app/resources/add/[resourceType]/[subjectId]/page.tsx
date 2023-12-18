@@ -90,7 +90,7 @@ const Page = ({ params }: PageProps) => {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await axios.post("/api/file/user", formData, {
+      const response = await axios.post("/api/file/file", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
