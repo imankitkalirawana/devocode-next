@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { isLoggedIn } from "../auth/authUtils";
+import { isLoggedIn } from "@/utils/authUtils";
 
 const Admin = () => {
   const { loggedIn, user } = isLoggedIn();

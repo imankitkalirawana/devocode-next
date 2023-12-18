@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { isLoggedIn } from "../authUtils";
+import { isLoggedIn } from "../../../utils/authUtils";
 const Login = () => {
   const [userData, setUserData] = useState({
     username: "",
@@ -54,23 +54,29 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          onChange={handleInput}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleInput}
-        />
+    <div className="section resources login-form">
+      <h1 className="section-title">Log in to Devocode</h1>
+      <form className="form">
+        <div className="form-input">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={handleInput}
+          />
+        </div>
+        <div className="form-input">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleInput}
+          />
+        </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <button onClick={handleSubmit}>Login</button>
+        <button className="btn btn-primary" onClick={handleSubmit}>
+          Login
+        </button>
       </form>
     </div>
   );

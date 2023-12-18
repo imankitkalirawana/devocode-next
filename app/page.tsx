@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import axios from "axios";
 import Link from "next/link";
-import "./globals.css";
+import Head from "next/head";
 
 interface Subject {
   title: string;
@@ -27,22 +27,29 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <div className="card card-auth">
-          <Link className="btn " href="/auth/login">
-            Login
-          </Link>
-          <Link href="/auth/register">Register</Link>
-        </div>
-        <div className="card">
-          <h1 className={styles.title}>Subjects</h1>
+    <>
+      <Head>
+        <title>Resources</title>
+        <meta name="description" content="Resources" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className={styles.container}>
+        <main className={styles.main}>
+          <div className="card card-auth">
+            <Link className="btn " href="/auth/login">
+              Login
+            </Link>
+            <Link href="/auth/register">Register</Link>
+          </div>
+          <div className="card">
+            <h1 className={styles.title}>Subjects</h1>
 
-          {subjects.map((subject, index) => (
-            <li key={index}>{subject.title}</li>
-          ))}
-        </div>
-      </main>
-    </div>
+            {subjects.map((subject, index) => (
+              <li key={index}>{subject.title}</li>
+            ))}
+          </div>
+        </main>
+      </div>
+    </>
   );
 }

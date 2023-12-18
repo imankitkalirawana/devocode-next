@@ -1,6 +1,5 @@
 "use client";
 import axios from "axios";
-import Link from "next/link";
 import React, { useState } from "react";
 
 const Register = () => {
@@ -50,53 +49,73 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h1>Register</h1>
-      <div>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          onChange={handleInput}
-        />
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          onChange={handleInput}
-        />
-        <input
-          type="text"
-          name="email"
-          placeholder="Email"
-          onChange={handleInput}
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          onChange={handleInput}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleInput}
-        />
-        <input
-          type="password"
-          name="password2"
-          placeholder="Confirm Password"
-          onChange={handleInput}
-        />
+    <div className="section resources login-form">
+      <h1 className="section-title">Sign up to Devocode</h1>
+      <form className="form">
+        <div className="form-input-group">
+          <div className="form-input">
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              onChange={handleInput}
+            />
+          </div>
+          <div className="form-input">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              onChange={handleInput}
+            />
+          </div>
+        </div>
+        <div className="form-input-group">
+          <div className="form-input">
+            <input
+              type="text"
+              name="email"
+              placeholder="Email"
+              onChange={handleInput}
+            />
+          </div>
+          <div className="form-input">
+            <input
+              type="text"
+              name="phone"
+              placeholder="Phone"
+              onChange={handleInput}
+            />
+          </div>
+        </div>
+        <div className="form-input-group">
+          <div className="form-input">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleInput}
+            />
+          </div>
+          <div className="form-input">
+            <input
+              type="password"
+              name="password2"
+              placeholder="Confirm Password"
+              onChange={handleInput}
+            />
+          </div>
+        </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <button type="submit" onClick={handleSubmit}>
+        <button
+          className="btn btn-primary"
+          type="submit"
+          onClick={handleSubmit}
+        >
           Register
         </button>
-      </div>
-      <Link href="/auth/login">Login</Link>
-      <Link href="/">Home</Link>
+      </form>
     </div>
   );
 };
