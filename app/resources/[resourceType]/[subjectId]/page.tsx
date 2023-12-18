@@ -32,9 +32,9 @@ interface Resource {
 
 const Resource = ({ params }: SubjectPageProps) => {
   const { subjectId, resourceType } = params;
-  const [subject, setSubject] = useState<Subject>();
+  const [subject, setSubject] = useState<Subject | undefined>(undefined);
   const [resources, setResources] = useState<Resource[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { loggedIn } = isLoggedIn();
 
   // fetch subjects from api
