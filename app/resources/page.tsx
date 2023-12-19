@@ -66,6 +66,17 @@ const Resources = () => {
     }
   };
 
+  // sort subjects with code
+  subjects.sort((a, b) => {
+    if (a.code < b.code) {
+      return -1;
+    }
+    if (a.code > b.code) {
+      return 1;
+    }
+    return 0;
+  });
+
   return (
     <>
       <div className="section resources">

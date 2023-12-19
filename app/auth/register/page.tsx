@@ -7,16 +7,6 @@ import dynamic from "next/dynamic";
 
 const Register = () => {
   const { loggedIn } = isLoggedIn();
-
-  if (!loggedIn) {
-    toast.error("Please fill registration form first.");
-    // redirect after 5 seconds
-    setTimeout(() => {
-      window.location.href = "https://forms.gle/yAb95M9ToQGgyWuP8";
-    }, 5000);
-    return null;
-  }
-
   const [userData, setUserData] = useState({
     name: "",
     username: "",
@@ -27,6 +17,15 @@ const Register = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
+
+  if (!loggedIn) {
+    toast.error("Please fill registration form first.");
+    // redirect after 5 seconds
+    setTimeout(() => {
+      window.location.href = "https://forms.gle/yAb95M9ToQGgyWuP8";
+    }, 5000);
+    return null;
+  }
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
