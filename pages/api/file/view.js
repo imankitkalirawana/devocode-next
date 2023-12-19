@@ -1,35 +1,37 @@
-import path from "path";
-import fs from "fs";
+import aws from "aws-sdk";
 
-export default function handler(req, res) {
-  if (req.method === "GET") {
-    const { filename } = req.query;
+const s3 = new aws.S3({
+  accessKeyId: "AKIARVSJ7VXJAJGKXNOE",
+  secretAccessKey: "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",
+  region: "ap-south-1",
+});
 
-    if (!filename) {
-      return res.status(400).json({ error: "File parameter is missing." });
-    }
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).end(); // Method Not Allowed
+  }
 
-    const filePath = path.join(process.cwd(), "public/uploads", filename);
+  const filename = req.query.filename;
 
-    // Check if the file exists
-    if (fs.existsSync(filePath)) {
-      // Set the appropriate headers for the response
-      res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
-      res.setHeader("Content-Type", "application/octet-stream");
+  const params = {
+    Bucket: "devocode-resources",
+    Key: filename,
+  };
 
-      // Create a read stream from the file path
-      const stream = fs.createReadStream(filePath);
+  try {
+    const data = await s3.getObject(params).promise();
 
-      // Pipe the file stream to the response object
-      stream.pipe(res);
-
-      // Handle errors during the streaming
-      stream.on("error", (error) => {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-      });
-    } else {
-      res.status(404).json({ error: "File not found." });
-    }
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+    res.setHeader("Content-Type", data.ContentType);
+    res.send(data.Body);
+  } catch (error) {
+    console.error("Error fetching file from S3:", error);
+    res.status(404).send("File not found");
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

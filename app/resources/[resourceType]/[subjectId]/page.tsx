@@ -95,20 +95,6 @@ const Resource = ({ params }: SubjectPageProps) => {
     };
   };
 
-  const handleDownload = async (filename: any) => {
-    if (filename === undefined) return console.error("No file to download");
-    const response = await fetch(`api/file/view?filename=${filename}`);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <>
       {subject && (
@@ -188,7 +174,8 @@ const Resource = ({ params }: SubjectPageProps) => {
                         </a>
                         <a
                           className="section-dropdown-item"
-                          onClick={() => handleDownload(resource.file)}
+                          href={`/api/file/download?filename=${resource.file}`}
+                          download
                         >
                           Download
                         </a>
