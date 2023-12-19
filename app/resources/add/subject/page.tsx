@@ -12,7 +12,7 @@ interface Subject {
   description: string;
 }
 
-const page = () => {
+const Page = () => {
   const [subject, setSubject] = useState<Subject>({} as Subject);
   const router = useRouter();
 
@@ -143,4 +143,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
