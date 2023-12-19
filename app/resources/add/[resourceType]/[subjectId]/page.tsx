@@ -98,6 +98,7 @@ const Page = ({ params }: PageProps) => {
     }
     const formData = new FormData();
     formData.append("file", file);
+    console.log("uploading file");
     try {
       await toast.promise(
         axios
@@ -107,7 +108,11 @@ const Page = ({ params }: PageProps) => {
             },
           })
           .then(() => {
+            console.log("file uploaded");
             addData();
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
           }),
         {
           pending: "Uploading file...",
