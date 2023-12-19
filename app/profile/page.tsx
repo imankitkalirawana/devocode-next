@@ -11,9 +11,6 @@ const Profile = () => {
   const router = useRouter();
   const { loggedIn } = isLoggedIn();
 
-  if (!loggedIn) {
-    router.push("/auth/login");
-  }
   // get data from api/file/admin
   const fetchFiles = async () => {
     try {
@@ -30,6 +27,9 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    if (!loggedIn) {
+      router.push("/auth/login");
+    }
     fetchFiles();
   }, []);
   return (
