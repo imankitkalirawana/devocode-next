@@ -40,7 +40,7 @@ const Page = ({ params }: PageProps) => {
 
   const fetchSubject = async () => {
     if (!loggedIn) {
-      router.push("/login");
+      router.push("/auth/login");
     }
     try {
       const response = await axios.get(`/api/subjects/subject?id=${subjectId}`);

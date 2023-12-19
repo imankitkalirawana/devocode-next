@@ -175,43 +175,24 @@ const Header = () => {
             </Link>
           </li>
 
-          {loggedIn ? (
-            <>
-              <li className="sidebar-list-item">
-                <Link href="/resources/add" className="sidebar-list-link">
-                  <i className="fa-regular fa-add"></i>
-                  Add
-                </Link>
-              </li>
-              <li className="sidebar-list-item">
-                <Link className="sidebar-list-link" href="/resources/update">
-                  <i className="fa-regular fa-file-arrow-up"></i>
-                  Update
-                </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li className="sidebar-list-item">
-                <a
-                  className="sidebar-list-link"
-                  href="https://divinelydeveloper.me"
-                >
-                  <i className="fa-regular fa-user"></i>
-                  About
-                </a>
-              </li>
-              <li className="sidebar-list-item">
-                <a
-                  className="sidebar-list-link"
-                  href="https://github.com/imankitkalirawana"
-                >
-                  <i className="fa-brands fa-github"></i>
-                  Github
-                </a>
-              </li>
-            </>
-          )}
+          <li className="sidebar-list-item">
+            <a
+              className="sidebar-list-link"
+              href="https://divinelydeveloper.me"
+            >
+              <i className="fa-regular fa-user"></i>
+              About
+            </a>
+          </li>
+          <li className="sidebar-list-item">
+            <a
+              className="sidebar-list-link"
+              href="https://github.com/imankitkalirawana"
+            >
+              <i className="fa-brands fa-github"></i>
+              Github
+            </a>
+          </li>
           <li className="sidebar-list-item">
             <a
               className="sidebar-list-link"
@@ -243,7 +224,7 @@ const Header = () => {
           </button>
         ) : (
           <Link
-            href="/login"
+            href="/auth/login"
             className="btn btn-primary login-register btn-slim"
           >
             Login

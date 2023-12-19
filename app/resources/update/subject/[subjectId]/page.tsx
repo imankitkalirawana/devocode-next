@@ -23,7 +23,7 @@ interface Subject {
 const Page = ({ params }: PageProps) => {
   const { subjectId } = params;
   const [subject, setSubject] = useState<Subject>({} as Subject);
-  const loggedIn = isLoggedIn();
+  const { loggedIn } = isLoggedIn();
   const Router = useRouter();
 
   const handleInput = (
@@ -43,7 +43,7 @@ const Page = ({ params }: PageProps) => {
 
   useEffect(() => {
     if (!loggedIn) {
-      Router.push("/login");
+      Router.push("/auth/login");
     }
     fetchSubject();
   }, []);

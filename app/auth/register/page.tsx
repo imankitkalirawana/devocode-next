@@ -1,8 +1,22 @@
 "use client";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { isLoggedIn } from "@/utils/authUtils";
+import { toast } from "react-toastify";
+import dynamic from "next/dynamic";
 
 const Register = () => {
+  const { loggedIn } = isLoggedIn();
+
+  if (!loggedIn) {
+    toast.error("Please fill registration form first.");
+    // redirect after 5 seconds
+    setTimeout(() => {
+      window.location.href = "https://forms.gle/yAb95M9ToQGgyWuP8";
+    }, 5000);
+    return null;
+  }
+
   const [userData, setUserData] = useState({
     name: "",
     username: "",
@@ -120,4 +134,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default dynamic(() => Promise.resolve(Register), { ssr: false });

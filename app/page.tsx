@@ -5,6 +5,10 @@ import styles from "./page.module.css";
 import axios from "axios";
 import Link from "next/link";
 import Head from "next/head";
+import NewsBanner from "@/components/NewsBanner";
+import Banner from "@/components/Banner";
+import HomeWarning from "@/components/HomeWarning";
+import "./style.css";
 
 interface Subject {
   title: string;
@@ -33,22 +37,10 @@ export default function Home() {
         <meta name="description" content="Resources" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <div className="card card-auth">
-            <Link className="btn " href="/auth/login">
-              Login
-            </Link>
-            <Link href="/auth/register">Register</Link>
-          </div>
-          <div className="card">
-            <h1 className={styles.title}>Subjects</h1>
-
-            {subjects.map((subject, index) => (
-              <li key={index}>{subject.title}</li>
-            ))}
-          </div>
-        </main>
+      <div className="container-fluid">
+        <NewsBanner />
+        <Banner />
+        <HomeWarning />
       </div>
     </>
   );

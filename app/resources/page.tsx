@@ -1,3 +1,5 @@
+// /resources
+
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -23,8 +25,6 @@ const Resources = () => {
   const { loggedIn } = isLoggedIn();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-
-  // reset notification
 
   const fetchSubjects = async () => {
     try {

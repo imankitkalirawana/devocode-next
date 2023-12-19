@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Link from "next/link";
+import { isLoggedIn } from "@/utils/authUtils";
 
 interface Subject {
   _id: string;
@@ -14,7 +15,15 @@ interface Subject {
 
 const Page = () => {
   const [subject, setSubject] = useState<Subject>({} as Subject);
+  const { loggedIn } = isLoggedIn();
   const router = useRouter();
+
+  //   check if logged in
+  useEffect(() => {
+    if (!loggedIn) {
+      router.push("/auth/login");
+    }
+  });
 
   //   handle input
   const handleInput = (

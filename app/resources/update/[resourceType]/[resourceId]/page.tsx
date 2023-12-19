@@ -27,12 +27,12 @@ interface Resource {
 const Page = ({ params }: PageProps) => {
   const { resourceId, resourceType } = params;
   const [resource, setResource] = useState<Resource>({} as Resource);
-  const loggedIn = isLoggedIn();
+  const { loggedIn } = isLoggedIn();
   const router = useRouter();
 
   useEffect(() => {
     if (!loggedIn) {
-      router.push("/login");
+      router.push("/auth/login");
     }
   }, []);
 

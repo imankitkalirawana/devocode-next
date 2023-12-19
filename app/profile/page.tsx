@@ -3,9 +3,17 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import axios from "axios";
+import { isLoggedIn } from "@/utils/authUtils";
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
   const [files, setFiles] = useState([]);
+  const router = useRouter();
+  const { loggedIn } = isLoggedIn();
+
+  if (!loggedIn) {
+    router.push("/auth/login");
+  }
   // get data from api/file/admin
   const fetchFiles = async () => {
     try {
