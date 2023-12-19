@@ -14,12 +14,6 @@ const storage = multer.memoryStorage();
 
 const upload = multer({ storage }).single("file");
 
-// create upload directory if it doesn't exist
-const dir = path.join(process.cwd(), "public/uploads");
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir);
-}
-
 export default async function handler(req, res) {
   verifyToken(req, res, async () => {
     if (req.method === "POST") {
