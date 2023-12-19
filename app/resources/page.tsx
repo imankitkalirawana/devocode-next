@@ -4,34 +4,70 @@ import axios from "axios";
 import Link from "next/link";
 import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AddedTime from "@/components/AddedTime";
+import Popup from "reactjs-popup";
+import dynamic from "next/dynamic";
 
 interface Subject {
   code: string;
   title: string;
   description: string;
+  addedDate: Date;
   _id: string;
 }
 
-export default function Resources() {
+const Resources = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { loggedIn } = isLoggedIn();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
+  // reset notification
+
+  const fetchSubjects = async () => {
+    try {
+      const response = await axios.get("/api/subjects/subject");
+      setSubjects(response.data);
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+      toast.error("Error fetching subjects");
+    }
+  };
+
   useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await axios.get("/api/subjects/subject");
-        setSubjects(response.data);
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      }
-    };
     fetchSubjects();
   }, []);
 
+  // handle delete
+  const handleDelete = async (id: string) => {
+    try {
+      await toast
+        .promise(
+          axios.delete(`/api/subjects/subject?id=${id}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          {
+            pending: "Deleting subject...",
+            success: "Subject deleted",
+            error: "Error deleting subject",
+          }
+        )
+        .then(() => {
+          fetchSubjects();
+          router.push("/resources");
+        });
+    } catch (error) {
+      console.error("Error deleting subject:", error);
+      toast.error("Error deleting subject");
+    }
+  };
+
   return (
-    <div>
+    <>
       <div className="section resources">
         <div className="section-title">Subjects</div>
         <div className="breadcrumbs">
@@ -40,6 +76,14 @@ export default function Resources() {
           </Link>
           <i className="fas fa-chevron-right breadcrumbs-item"></i>
           <span className="breadcrumbs-item selected">Subjects</span>
+          {loggedIn && (
+            <Link
+              className="breadcrumbs-item btn"
+              href="/resources/add/subject"
+            >
+              <i className="fa-solid fa-circle-plus"></i>
+            </Link>
+          )}
         </div>
         <div className="form-input">
           <label htmlFor="search">Search</label>
@@ -102,20 +146,51 @@ export default function Resources() {
                             className="section-dropdown-item"
                             href={`/resources/update/subject/${subject._id}`}
                           >
+                            <i className="fa-regular fa-edit icon-left"></i>
                             Edit
                           </Link>
+                          <Popup
+                            trigger={
+                              <a className="section-dropdown-item danger">
+                                <i className="fa-regular fa-trash icon-left"></i>
+                                Delete
+                              </a>
+                            }
+                          >
+                            <>
+                              <div className="popup">
+                                <div className="popup-upper">
+                                  <div className="popup-title">Delete</div>
+                                  <div className="popup-message">
+                                    Are you sure?
+                                  </div>
+                                </div>
+                                <hr className="divider-horizontal" />
+                                <div className="popup-btns">
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={() => handleDelete(subject._id)}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          </Popup>
                         </div>
                       </div>
                     )}
                   </div>
                   <div className="section-card-lower">
-                    {/* <AddedTime dateString={subject.addedDate} /> */}
+                    <AddedTime dateString={subject.addedDate} />
                   </div>
                 </div>
               ))}
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
-}
+};
+
+export default dynamic(() => Promise.resolve(Resources), { ssr: false });

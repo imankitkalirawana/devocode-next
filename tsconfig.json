@@ -31,6 +31,6 @@
     "pages/api/subjects/subject.js",
     "pages/api/status.ts",
     "models/Subjects.js"
-  ],
+, "components/Notification.js"  ],
   "exclude": ["node_modules"]
 }

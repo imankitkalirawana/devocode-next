@@ -1,4 +1,6 @@
 import { Header } from "@/components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 export const metadata = {
@@ -22,6 +24,7 @@ export default function RootLayout({
       <body>
         <Header />
         {children}
+        <ToastContainer theme="dark" autoClose={5000} />
       </body>
     </html>
   );

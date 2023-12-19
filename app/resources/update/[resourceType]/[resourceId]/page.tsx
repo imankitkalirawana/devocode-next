@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { isLoggedIn } from "@/utils/authUtils";
 import Popup from "reactjs-popup";
+import { toast } from "react-toastify";
 
 interface PageProps {
   params: {
@@ -57,47 +58,71 @@ const Page = ({ params }: PageProps) => {
     fetchResources();
   }, []);
 
-  const handleSubmit = () => {
-    // update resource
-    axios
-      .put(
-        `/api/subjects/resource?resourceId=${resourceId}&resourceType=${resourceType}`,
-        resource,
+  const handleSubmit = async () => {
+    // check empty title
+    if (resource.title === undefined || resource.title === "") {
+      toast.error("Please enter a title");
+      return;
+    }
+
+    await toast
+      .promise(
+        axios
+          .put(
+            `/api/subjects/resource?resourceId=${resourceId}&resourceType=${resourceType}`,
+            resource,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log("response:", response);
+            fetchResources();
+          }),
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          pending: "Updating resource...",
+          success: "Updated successfully!",
+          error: "Error updating!",
         }
       )
-      .then((response) => {
-        console.log("response:", response);
-        fetchResources();
+      .then(() => {
+        router.push(`/resources/${resourceType}/${resource.subject}`);
       });
   };
 
-  const handleDelete = () => {
-    axios
-      .delete(
-        `/api/subjects/resource?resourceId=${resourceId}&resourceType=${resourceType}`,
+  const handleDelete = async () => {
+    await toast
+      .promise(
+        axios
+          .delete(
+            `/api/subjects/resource?resourceId=${resourceId}&resourceType=${resourceType}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then(() => {
+            axios
+              .delete(`/api/file/file?filename=${resource.file}`, {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              })
+              .catch((error) => {
+                console.error("Error deleting file:", error);
+              });
+          }),
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          pending: "Deleting resource...",
+          success: "Resource deleted successfully!",
+          error: "Error deleting resource",
         }
       )
-      .then((response) => {
-        axios
-          .delete(`/api/file/file?filename=${resource.file}`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          })
-          .then(() => {
-            router.back();
-          })
-          .catch((error) => {
-            console.error("Error deleting file:", error);
-          });
+      .then(() => {
+        router.push(`/resources/${resourceType}/${resource.subject}`);
       });
   };
   return (

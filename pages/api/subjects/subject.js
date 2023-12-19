@@ -32,6 +32,14 @@ export default cors(async (req, res) => {
             });
             return;
           }
+          // find if subject with same code exists
+          const subjectExists = await Subject.findOne({ code });
+          if (subjectExists) {
+            res.status(400).json({
+              message: "Subject with same code already exists.",
+            });
+            return;
+          }
 
           const subject = await Subject.create({
             code,

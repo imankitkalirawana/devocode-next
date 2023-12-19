@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 interface PageProps {
   params: {
@@ -38,6 +39,9 @@ const Page = ({ params }: PageProps) => {
   const router = useRouter();
 
   const fetchSubject = async () => {
+    if (!loggedIn) {
+      router.push("/login");
+    }
     try {
       const response = await axios.get(`/api/subjects/subject?id=${subjectId}`);
       setSubject(response.data);
@@ -86,24 +90,38 @@ const Page = ({ params }: PageProps) => {
     }
   };
   // upload file function to /api/file/user api
-  const uploadFile = async () => {
+  const handleSubmit = async () => {
+    // check if empty title and file
+    if (resource.title === undefined || file === null) {
+      toast.error("Please enter a title and file.");
+      return;
+    }
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await axios.post("/api/file/file", formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      console.log(response.data);
-      console.log("File uploaded successfully");
+      await toast.promise(
+        axios
+          .post("/api/file/file", formData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .then(() => {
+            addData();
+          }),
+        {
+          pending: "Uploading file...",
+          success: "File uploaded successfully!",
+          error: "Error uploading file",
+        }
+      );
     } catch (error) {
       console.error("Error uploading file:", error);
     }
   };
 
   //   handle submit
-  const handleSubmit = () => {
+  const addData = () => {
     axios
       .post(
         `/api/subjects/resource?resourceType=${resourceType}&subjectId=${subjectId}`,
@@ -115,7 +133,6 @@ const Page = ({ params }: PageProps) => {
         }
       )
       .then((response) => {
-        uploadFile();
         console.log(response.data);
       })
       .catch((error) => console.error("Error adding resource:", error));
@@ -163,47 +180,47 @@ const Page = ({ params }: PageProps) => {
         <div className="container-card">
           <div className="container-card-header">
             <h2>Add {resourceType}</h2>
-            <hr className="divider-horizontal" />
-            <div className="container-card-form form">
-              <div className="form-input">
-                <label htmlFor="title">Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  id="title"
-                  placeholder="Unit 1"
-                  value={resource.title}
-                  onChange={handleInput}
-                />
-              </div>
-              <div className="form-input">
-                <label htmlFor="description">Description (Optional)</label>
-                <input
-                  type="text"
-                  name="description"
-                  id="description"
-                  placeholder="Description"
-                  value={resource.description}
-                  onChange={handleInput}
-                />
-              </div>
-              <div className="form-input form-input-file">
-                <label htmlFor="file">File</label>
-                <input
-                  type="file"
-                  name="file"
-                  id="file"
-                  onChange={handleFileInput}
-                />
-              </div>
-              <div className="form-input form-btns">
-                <button className="btn" onClick={() => router.back()}>
-                  Cancel
-                </button>
-                <button className="btn btn-primary" onClick={handleSubmit}>
-                  Add
-                </button>
-              </div>
+          </div>
+          <hr className="divider-horizontal" />
+          <div className="container-card-form form">
+            <div className="form-input">
+              <label htmlFor="title">Title</label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Unit 1"
+                value={resource.title}
+                onChange={handleInput}
+              />
+            </div>
+            <div className="form-input">
+              <label htmlFor="description">Description (Optional)</label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                placeholder="Description"
+                value={resource.description}
+                onChange={handleInput}
+              />
+            </div>
+            <div className="form-input form-input-file">
+              <label htmlFor="file">File</label>
+              <input
+                type="file"
+                name="file"
+                id="file"
+                onChange={handleFileInput}
+              />
+            </div>
+            <div className="form-input form-btns">
+              <button className="btn" onClick={() => router.back()}>
+                Cancel
+              </button>
+              <button className="btn btn-primary" onClick={handleSubmit}>
+                Add
+              </button>
             </div>
           </div>
         </div>

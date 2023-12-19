@@ -6,6 +6,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface SubjectPageProps {
   params: {
@@ -48,6 +49,7 @@ const Resource = ({ params }: SubjectPageProps) => {
       setSubject(response.data);
     } catch (error) {
       console.error("Error fetching subject:", error);
+      toast.error("Error fetching data");
     }
   };
   const fetchResources = async () => {
@@ -66,8 +68,8 @@ const Resource = ({ params }: SubjectPageProps) => {
     fetchResources();
   }, []);
 
-  const handleDelete = (id: string, filename: string) => {
-    return () => {
+  const handleDelete = async (id: string, filename: string) => {
+    await toast.promise(
       axios
         .delete(
           `/api/subjects/resource?resourceType=${resourceType}&resourceId=${id}`,
@@ -91,8 +93,13 @@ const Resource = ({ params }: SubjectPageProps) => {
         })
         .catch((error) => {
           console.error("Error deleting resource:", error);
-        });
-    };
+        }),
+      {
+        pending: "Deleting resource...",
+        success: "Resource deleted successfully!",
+        error: "Error deleting resource",
+      }
+    );
   };
 
   return (
@@ -170,6 +177,7 @@ const Resource = ({ params }: SubjectPageProps) => {
                           href={`/api/file/view?filename=${resource.file}`}
                           target="_blank"
                         >
+                          <i className="fa-regular fa-arrow-up-right icon-left"></i>
                           View
                         </a>
                         <a
@@ -177,6 +185,7 @@ const Resource = ({ params }: SubjectPageProps) => {
                           href={`/api/file/download?filename=${resource.file}`}
                           download
                         >
+                          <i className="fa-regular fa-download icon-left"></i>
                           Download
                         </a>
 
@@ -186,11 +195,13 @@ const Resource = ({ params }: SubjectPageProps) => {
                               className="section-dropdown-item"
                               href={`/resources/update/${resourceType}/${resource._id}`}
                             >
+                              <i className="fa-regular fa-edit icon-left"></i>
                               Edit
                             </Link>
                             <Popup
                               trigger={
                                 <span className="section-dropdown-item btn-danger">
+                                  <i className="fa-regular fa-trash icon-left"></i>
                                   Delete
                                 </span>
                               }
@@ -207,11 +218,14 @@ const Resource = ({ params }: SubjectPageProps) => {
                                   <div className="popup-btns">
                                     <button
                                       className="btn btn-danger"
-                                      onClick={handleDelete(
-                                        resource._id,
-                                        resource.file
-                                      )}
+                                      onClick={() =>
+                                        handleDelete(
+                                          resource._id,
+                                          resource.file
+                                        )
+                                      }
                                     >
+                                      <i className="fa-regular fa-trash icon-left"></i>
                                       Delete
                                     </button>
                                   </div>
