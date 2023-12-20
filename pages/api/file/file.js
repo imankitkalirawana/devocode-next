@@ -1,7 +1,6 @@
-import path from "path";
-import fs from "fs";
 import multer from "multer";
 import aws from "aws-sdk";
+import { Readable } from "stream";
 import verifyToken from "@/middleware/verifyToken";
 
 const s3 = new aws.S3({
@@ -17,25 +16,32 @@ const upload = multer({ storage }).single("file");
 export default async function handler(req, res) {
   verifyToken(req, res, async () => {
     if (req.method === "POST") {
-      // upload file to server
       try {
-        // upload to aws s3
-        upload(req, res, (err) => {
+        upload(req, res, async (err) => {
           if (err) {
             console.log(err);
             return res.status(500).json({ error: "Internal Server Error" });
           }
+
           const { originalname, buffer } = req.file;
+
+          // Create a readable stream from the buffer
+          const readStream = new Readable();
+          readStream.push(buffer);
+          readStream.push(null); // Signal the end of the stream
+
           const params = {
             Bucket: "devocode-resources",
             Key: originalname,
-            Body: buffer,
+            Body: readStream, // Pass the stream as the Body
           };
+
           s3.upload(params, (err, data) => {
             if (err) {
               console.log(err);
               return res.status(500).json({ error: "Internal Server Error" });
             }
+
             const { Location, Key } = data;
             res.status(200).json({
               message: "File uploaded successfully.",
