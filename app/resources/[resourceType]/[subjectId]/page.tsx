@@ -2,11 +2,23 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, {
+  MouseEventHandler,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import Popup from "reactjs-popup";
 import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import S3 from "aws-sdk/clients/s3";
+
+const s3 = new S3({
+  accessKeyId: "AKIARVSJ7VXJAJGKXNOE",
+  secretAccessKey: "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",
+  region: "ap-south-1",
+});
 
 interface SubjectPageProps {
   params: {
@@ -102,6 +114,20 @@ const Resource = ({ params }: SubjectPageProps) => {
     );
   };
 
+  const handleDownload = async (filename: string) => {
+    const params = {
+      Bucket: "devocode-resources",
+      Key: filename,
+    };
+
+    try {
+      const url = await s3.getSignedUrlPromise("getObject", params);
+      window.open(url, "_blank");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       {subject && (
@@ -182,7 +208,7 @@ const Resource = ({ params }: SubjectPageProps) => {
                         </a>
                         <a
                           className="section-dropdown-item"
-                          href={`/api/file/download?filename=${resource.file}`}
+                          onClick={() => handleDownload(resource.file)}
                           download
                         >
                           <i className="fa-regular fa-download icon-left"></i>

@@ -5,7 +5,14 @@ import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-toastify";
+import S3 from "aws-sdk/clients/s3";
+import { set } from "mongoose";
 
+const s3 = new S3({
+  accessKeyId: "AKIARVSJ7VXJAJGKXNOE",
+  secretAccessKey: "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",
+  region: "ap-south-1",
+});
 interface PageProps {
   params: {
     resourceType: string;
@@ -35,7 +42,10 @@ const Page = ({ params }: PageProps) => {
   const { loggedIn } = isLoggedIn();
   const [resource, setResource] = useState<Resource>({} as Resource);
   const [subject, setSubject] = useState<Subject>({} as Subject);
-  const [file, setFile] = useState<any>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [progress, setProgress] = useState<number>(0);
+  const [upload, setUpload] = useState<S3.ManagedUpload | null>(null);
+
   const router = useRouter();
 
   const fetchSubject = async () => {
@@ -90,43 +100,35 @@ const Page = ({ params }: PageProps) => {
     }
   };
   // upload file function to /api/file/user api
-  const handleSubmit = async () => {
-    // check if empty title and file
-    if (resource.title === undefined || file === null) {
-      toast.error("Please enter a title and file.");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
-    console.log("uploading file");
+  const handleUpload = async () => {
+    if (!file) return;
+    const params = {
+      Bucket: "devocode-resources",
+      Key: file.name,
+      Body: file,
+    };
+    console.log(params);
+
     try {
-      await toast.promise(
-        axios
-          .post("/api/file/file", formData, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          })
-          .then(() => {
-            console.log("file uploaded");
-            addData();
-          })
-          .catch((error) => {
-            console.error("Error uploading file:", error);
-          }),
-        {
-          pending: "Uploading file...",
-          success: "File uploaded successfully!",
-          error: "Error uploading file",
-        }
-      );
-    } catch (error) {
-      console.error("Error uploading file:", error);
+      const upload = s3.upload(params);
+      setUpload(upload);
+      upload.on("httpUploadProgress", (p: any) => {
+        setProgress((p.loaded / p.total) * 100);
+      });
+      await toast.promise(upload.promise(), {
+        pending: "Uploading...",
+        success: "File uploaded successfully",
+        error: "Error uploading file",
+      });
+      console.log(`File uploaded successfully: ${file.name}`);
+    } catch (err) {
+      console.error(err);
     }
+    setProgress(0);
   };
 
   //   handle submit
-  const addData = () => {
+  const handleSubmit = async () => {
     axios
       .post(
         `/api/subjects/resource?resourceType=${resourceType}&subjectId=${subjectId}`,
@@ -138,6 +140,7 @@ const Page = ({ params }: PageProps) => {
         }
       )
       .then((response) => {
+        handleUpload();
         console.log(response.data);
       })
       .catch((error) => console.error("Error adding resource:", error));
@@ -218,6 +221,9 @@ const Page = ({ params }: PageProps) => {
                 id="file"
                 onChange={handleFileInput}
               />
+            </div>
+            <div className="form-input">
+              <progress className="progress" value={progress} max="100" />
             </div>
             <div className="form-input form-btns">
               <button className="btn" onClick={() => router.back()}>
