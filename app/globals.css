@@ -619,9 +619,7 @@ input[disabled] {
 
 .section-menu {
   display: grid;
-  /* flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-around; */
+  position: relative;
   grid-gap: 24px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
@@ -764,21 +762,23 @@ input[disabled] {
   color: var(--dark);
 }
 
+.section label,
 .section .input {
   max-width: calc(350px - 1rem - 0.25rem);
 }
 
-.section-error {
+.error-page {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  padding: 2rem;
+  align-items: center;
 }
 
-.section-error img {
-  width: 100%;
-  max-width: 400px;
+.error-page-message {
+  font-size: 16px;
+  color: var(--faded);
 }
 
 /* section warning  */
@@ -1016,6 +1016,10 @@ input[disabled] {
 
 .danger {
   color: var(--danger);
+}
+
+.success {
+  color: var(--success);
 }
 
 /* progress */

@@ -11,6 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import AddedTime from "@/components/AddedTime";
 import Popup from "reactjs-popup";
 import dynamic from "next/dynamic";
+import Skeleton from "react-loading-skeleton";
+import NotFound from "@/components/Error";
+import SkeletonCard from "@/components/SkeletonCard";
 
 interface Subject {
   code: string;
@@ -25,14 +28,17 @@ const Resources = () => {
   const { loggedIn } = isLoggedIn();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchSubjects = async () => {
     try {
       const response = await axios.get("/api/subjects/subject");
       setSubjects(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching subjects:", error);
       toast.error("Error fetching subjects");
+      setLoading(false);
     }
   };
 
@@ -77,6 +83,18 @@ const Resources = () => {
     return 0;
   });
 
+  const filteredSubjects = subjects.filter(
+    (subject) =>
+      (subject &&
+        (subject.code || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())) ||
+      (subject.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (subject.description || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div className="section resources">
@@ -96,34 +114,30 @@ const Resources = () => {
             </Link>
           )}
         </div>
-        <div className="form-input">
-          <label htmlFor="search">Search</label>
-          <input
-            id="search"
-            className="input"
-            type="text"
-            name="hidden"
-            placeholder="CSE101, MTH302, etc."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        {subjects.length > 0 && (
+          <div className="form-input">
+            <label htmlFor="search">Search</label>
+            <input
+              id="search"
+              className="input"
+              type="text"
+              name="hidden"
+              placeholder="CSE101, MTH302, etc."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        )}
         <div className="section-content">
           <div className="section-menu">
-            {subjects
-              .filter(
-                (subject) =>
-                  subject.code
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                  subject.title
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                  subject.description
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase())
-              )
-              .map((subject, index) => (
+            {loading &&
+              Array.from({ length: 12 }).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))}
+            {filteredSubjects.length === 0 && !loading ? (
+              <NotFound title="404" message="No subjects found" />
+            ) : (
+              filteredSubjects.map((subject, index) => (
                 <div
                   onClick={() => {
                     router.push(`/resources/resourceType/${subject._id}`);
@@ -196,7 +210,8 @@ const Resources = () => {
                     <AddedTime dateString={subject.addedDate} />
                   </div>
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </div>
       </div>

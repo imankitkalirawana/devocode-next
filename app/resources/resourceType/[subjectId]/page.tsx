@@ -3,6 +3,9 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Skeleton from "react-loading-skeleton";
+import NotFound from "@/components/Error";
+import SkeletonCard from "@/components/SkeletonCard";
 
 interface Subject {
   code: string;
@@ -31,6 +34,7 @@ const resourcesType = [
 export default function Subject({ params }: SubjectPageProps) {
   const [subject, setSubject] = useState<Subject>();
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,12 +44,18 @@ export default function Subject({ params }: SubjectPageProps) {
           `/api/subjects/subject?id=${params.subjectId}`
         );
         setSubject(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching subject:", error);
       }
     };
     fetchSubject();
   }, [params.subjectId]);
+
+  // filtered resources
+  const filteredResourcesType = resourcesType.filter((resourceType) =>
+    resourceType.includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="section resources">
@@ -61,7 +71,13 @@ export default function Subject({ params }: SubjectPageProps) {
         <span className="breadcrumbs-item selected">{subject?.code}</span>
       </div>
       <h2 className="section-title">
-        {subject?.code}: {subject?.title}
+        {loading ? (
+          <Skeleton width={500} />
+        ) : (
+          <>
+            {subject?.code} - {subject?.title}
+          </>
+        )}
       </h2>
       <div className="form-input">
         <label htmlFor="search">Search</label>
@@ -77,29 +93,41 @@ export default function Subject({ params }: SubjectPageProps) {
       </div>
       <div className="section-content">
         <div className="section-menu">
-          {resourcesType
-            .filter((resource) => resource.includes(searchQuery.toLowerCase()))
-            .sort()
-            .map((resourceType, index) => (
-              <div
-                onClick={() =>
-                  router.push(`/resources/${resourceType}/${params.subjectId}`)
-                }
-                key={index}
-                className="section-card"
-              >
-                <div className="section-card-upper">
-                  <div className="section-card-upper-left">
-                    <i className="fa-solid fa-folder"></i>
-                    <div className="section-card-details">
-                      <h3 className="section-card-title-short">
-                        {resourceType}
-                      </h3>
+          {loading &&
+            Array.from({ length: 10 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          {filteredResourcesType.length === 0 && !loading ? (
+            <NotFound title="404" message="No search results" />
+          ) : (
+            filteredResourcesType
+              .filter((resource) =>
+                resource.includes(searchQuery.toLowerCase())
+              )
+              .sort()
+              .map((resourceType, index) => (
+                <div
+                  onClick={() =>
+                    router.push(
+                      `/resources/${resourceType}/${params.subjectId}`
+                    )
+                  }
+                  key={index}
+                  className="section-card"
+                >
+                  <div className="section-card-upper">
+                    <div className="section-card-upper-left">
+                      <i className="fa-solid fa-folder"></i>
+                      <div className="section-card-details">
+                        <h3 className="section-card-title-short">
+                          {resourceType}
+                        </h3>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+          )}
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { Header } from "@/components";
 import { ToastContainer } from "react-toastify";
+import { SkeletonTheme } from "react-loading-skeleton";
 import "react-toastify/dist/ReactToastify.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import "./globals.css";
 
 export const metadata = {
@@ -25,7 +27,9 @@ export default function RootLayout({
       </head>
       <body>
         <Header />
-        {children}
+        <SkeletonTheme baseColor="#202020" highlightColor="#444">
+          {children}
+        </SkeletonTheme>
         <ToastContainer theme="dark" autoClose={5000} position="bottom-right" />
       </body>
     </html>

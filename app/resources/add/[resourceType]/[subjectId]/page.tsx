@@ -125,6 +125,7 @@ const Page = ({ params }: PageProps) => {
           console.log(`File uploaded successfully... uploading to db`);
           addData();
           console.log("Data added successfully");
+          router.push(`/resources/${resourceType}/${subjectId}`);
         })
         .catch((err) => {
           console.error("Error uploading file:", err);
@@ -132,7 +133,6 @@ const Page = ({ params }: PageProps) => {
     } catch (err) {
       console.error(err);
     }
-    setProgress(0);
   };
 
   //   handle submit

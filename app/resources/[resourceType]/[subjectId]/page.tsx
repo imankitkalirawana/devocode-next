@@ -13,6 +13,8 @@ import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import S3 from "aws-sdk/clients/s3";
+import SkeletonCard from "@/components/SkeletonCard";
+import NotFound from "@/components/Error";
 
 const s3 = new S3({
   accessKeyId: "AKIARVSJ7VXJAJGKXNOE",
@@ -51,6 +53,7 @@ const Resource = ({ params }: SubjectPageProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { loggedIn } = isLoggedIn();
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
 
   // fetch subjects from api
   const fetchSubject = async () => {
@@ -70,6 +73,7 @@ const Resource = ({ params }: SubjectPageProps) => {
         `/api/subjects/resource?subjectId=${params.subjectId}&resourceType=${params.resourceType}`
       );
       setResources(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching resources:", error);
     }
@@ -128,6 +132,29 @@ const Resource = ({ params }: SubjectPageProps) => {
     }
   };
 
+  // sort resources with title
+  resources.sort((a, b) => {
+    if (a.title < b.title) {
+      return -1;
+    }
+    if (a.title > b.title) {
+      return 1;
+    }
+    return 0;
+  });
+
+  // filtered resources
+  const filteredResources = resources.filter(
+    (resource) =>
+      (resource &&
+        (resource.title || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())) ||
+      (resource.description || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       {subject && (
@@ -160,120 +187,130 @@ const Resource = ({ params }: SubjectPageProps) => {
           </div>
 
           <h2 className="section-title">{resourceType}</h2>
-          <div className="form-input">
-            <label htmlFor="search">Search</label>
-            <input
-              id="search"
-              className="input"
-              name="hidden"
-              type="text"
-              placeholder={`Search ${resourceType}`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          {resources.length > 0 && (
+            <div className="form-input">
+              <label htmlFor="search">Search</label>
+              <input
+                id="search"
+                className="input"
+                name="hidden"
+                type="text"
+                placeholder={`Search ${resourceType}`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          )}
           <div className="section-content">
             <div className="section-menu">
-              {resources.map((resource, index) => (
-                <div className="section-card" key={index}>
-                  <div className="section-card-upper">
-                    <div className="section-card-upper-left">
-                      <i className="fa-solid fa-file"></i>
-                      <div className="section-card-details">
-                        <h3 className="section-card-title-short">
-                          {resource.title}
-                        </h3>
-                        <p className="section-card-title">
-                          {resource.description}
-                        </p>
+              {loading &&
+                Array.from({ length: 12 }).map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              {filteredResources.length === 0 && !loading ? (
+                <NotFound title="404" message="No resources found" />
+              ) : (
+                filteredResources.map((resource, index) => (
+                  <div className="section-card" key={index}>
+                    <div className="section-card-upper">
+                      <div className="section-card-upper-left">
+                        <i className="fa-solid fa-file"></i>
+                        <div className="section-card-details">
+                          <h3 className="section-card-title-short">
+                            {resource.title}
+                          </h3>
+                          <p className="section-card-title">
+                            {resource.description}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      className="section-card-btn"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                      }}
-                    >
-                      <button className="btn btn-faded">
-                        <i className="fa-solid fa-ellipsis-vertical"></i>
-                      </button>
-                      <div className="section-dropdown-content">
-                        <a
-                          className="section-dropdown-item"
-                          href={`/api/file/view?filename=${resource.file}`}
-                          target="_blank"
-                        >
-                          <i className="fa-regular fa-arrow-up-right icon-left"></i>
-                          View
-                        </a>
-                        <a
-                          className="section-dropdown-item"
-                          onClick={() => handleDownload(resource.file)}
-                          download
-                        >
-                          <i className="fa-regular fa-download icon-left"></i>
-                          Download
-                        </a>
+                      <div
+                        className="section-card-btn"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                        }}
+                      >
+                        <button className="btn btn-faded">
+                          <i className="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <div className="section-dropdown-content">
+                          <a
+                            className="section-dropdown-item"
+                            href={`/api/file/view?filename=${resource.file}`}
+                            target="_blank"
+                          >
+                            <i className="fa-regular fa-arrow-up-right icon-left"></i>
+                            View
+                          </a>
+                          <a
+                            className="section-dropdown-item"
+                            onClick={() => handleDownload(resource.file)}
+                            download
+                          >
+                            <i className="fa-regular fa-download icon-left"></i>
+                            Download
+                          </a>
 
-                        {loggedIn && (
-                          <>
-                            <Link
-                              className="section-dropdown-item"
-                              href={`/resources/update/${resourceType}/${resource._id}`}
-                            >
-                              <i className="fa-regular fa-edit icon-left"></i>
-                              Edit
-                            </Link>
-                            <Popup
-                              trigger={
-                                <span className="section-dropdown-item btn-danger">
-                                  <i className="fa-regular fa-trash icon-left"></i>
-                                  Delete
-                                </span>
-                              }
-                            >
-                              <>
-                                <div className="popup">
-                                  <div className="popup-upper">
-                                    <div className="popup-title">Delete</div>
-                                    <div className="popup-message">
-                                      Are you sure?
+                          {loggedIn && (
+                            <>
+                              <Link
+                                className="section-dropdown-item"
+                                href={`/resources/update/${resourceType}/${resource._id}`}
+                              >
+                                <i className="fa-regular fa-edit icon-left"></i>
+                                Edit
+                              </Link>
+                              <Popup
+                                trigger={
+                                  <span className="section-dropdown-item btn-danger">
+                                    <i className="fa-regular fa-trash icon-left"></i>
+                                    Delete
+                                  </span>
+                                }
+                              >
+                                <>
+                                  <div className="popup">
+                                    <div className="popup-upper">
+                                      <div className="popup-title">Delete</div>
+                                      <div className="popup-message">
+                                        Are you sure?
+                                      </div>
+                                    </div>
+                                    <hr className="divider-horizontal" />
+                                    <div className="popup-btns">
+                                      <button
+                                        className="btn btn-danger"
+                                        onClick={() =>
+                                          handleDelete(
+                                            resource._id,
+                                            resource.file
+                                          )
+                                        }
+                                      >
+                                        <i className="fa-regular fa-trash icon-left"></i>
+                                        Delete
+                                      </button>
                                     </div>
                                   </div>
-                                  <hr className="divider-horizontal" />
-                                  <div className="popup-btns">
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={() =>
-                                        handleDelete(
-                                          resource._id,
-                                          resource.file
-                                        )
-                                      }
-                                    >
-                                      <i className="fa-regular fa-trash icon-left"></i>
-                                      Delete
-                                    </button>
-                                  </div>
-                                </div>
-                              </>
-                            </Popup>
-                          </>
-                        )}
+                                </>
+                              </Popup>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
+                    <div className="section-card-lower">
+                      {/* <AddedTime dateString={file.addedDate} /> */}
+                      <span>2h ago</span>
+                      <span>
+                        {resource.filesize
+                          ? `${parseInt(resource.filesize)}MB`
+                          : ""}
+                      </span>
+                    </div>
                   </div>
-                  <div className="section-card-lower">
-                    {/* <AddedTime dateString={file.addedDate} /> */}
-                    <span>2h ago</span>
-                    <span>
-                      {resource.filesize
-                        ? `${parseInt(resource.filesize)}MB`
-                        : ""}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

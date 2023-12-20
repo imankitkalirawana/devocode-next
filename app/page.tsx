@@ -8,6 +8,8 @@ import Head from "next/head";
 import NewsBanner from "@/components/NewsBanner";
 import Banner from "@/components/Banner";
 import HomeWarning from "@/components/HomeWarning";
+
+
 import "./style.css";
 
 interface Subject {
