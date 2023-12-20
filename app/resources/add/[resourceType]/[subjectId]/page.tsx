@@ -1,6 +1,6 @@
 // /resources/add/[resourceType]/[subjectId]/page.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import { isLoggedIn } from "@/utils/authUtils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -100,7 +100,7 @@ const Page = ({ params }: PageProps) => {
     }
   };
   // upload file function to /api/file/user api
-  const handleUpload = async () => {
+  const handleSubmit = async () => {
     if (!file) return;
     const params = {
       Bucket: "devocode-resources",
@@ -115,12 +115,20 @@ const Page = ({ params }: PageProps) => {
       upload.on("httpUploadProgress", (p: any) => {
         setProgress((p.loaded / p.total) * 100);
       });
-      await toast.promise(upload.promise(), {
-        pending: "Uploading...",
-        success: "File uploaded successfully",
-        error: "Error uploading file",
-      });
-      console.log(`File uploaded successfully: ${file.name}`);
+      await toast
+        .promise(upload.promise(), {
+          pending: "Uploading...",
+          success: "File uploaded successfully",
+          error: "Error uploading file",
+        })
+        .then(() => {
+          console.log(`File uploaded successfully... uploading to db`);
+          addData();
+          console.log("Data added successfully");
+        })
+        .catch((err) => {
+          console.error("Error uploading file:", err);
+        });
     } catch (err) {
       console.error(err);
     }
@@ -128,7 +136,7 @@ const Page = ({ params }: PageProps) => {
   };
 
   //   handle submit
-  const handleSubmit = async () => {
+  const addData = async () => {
     axios
       .post(
         `/api/subjects/resource?resourceType=${resourceType}&subjectId=${subjectId}`,
@@ -140,10 +148,17 @@ const Page = ({ params }: PageProps) => {
         }
       )
       .then((response) => {
-        handleUpload();
         console.log(response.data);
       })
       .catch((error) => console.error("Error adding resource:", error));
+  };
+
+  const handleCancel: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    if (!upload) return;
+    upload.abort();
+    setUpload(null);
+    setProgress(0);
   };
 
   return (
@@ -222,9 +237,25 @@ const Page = ({ params }: PageProps) => {
                 onChange={handleFileInput}
               />
             </div>
-            <div className="form-input">
-              <progress className="progress" value={progress} max="100" />
-            </div>
+            {upload && (
+              <div className="form-input progress-input">
+                <span className="progress-text">{progress.toFixed(0)}%</span>
+                <progress
+                  className="progress"
+                  value={progress.toFixed(0)}
+                  max="100"
+                />
+                {progress < 100 ||
+                  (progress > 0 && (
+                    <button
+                      className="btn btn-danger btn-slim"
+                      onClick={handleCancel}
+                    >
+                      <i className="fa-regular fa-xmark"></i>
+                    </button>
+                  ))}
+              </div>
+            )}
             <div className="form-input form-btns">
               <button className="btn" onClick={() => router.back()}>
                 Cancel
