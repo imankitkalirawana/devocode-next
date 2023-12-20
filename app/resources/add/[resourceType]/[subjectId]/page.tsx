@@ -254,7 +254,7 @@ const Page = ({ params }: PageProps) => {
                   </button>
                 )}
                 {progress === 100 && (
-                  <i className="fa-solid fa-circle-check"></i>
+                  <i className="fa-solid fa-circle-check success"></i>
                 )}
               </div>
             )}
