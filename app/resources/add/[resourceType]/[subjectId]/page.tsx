@@ -245,15 +245,17 @@ const Page = ({ params }: PageProps) => {
                   value={progress.toFixed(0)}
                   max="100"
                 />
-                {progress < 100 ||
-                  (progress > 0 && (
-                    <button
-                      className="btn btn-danger btn-slim"
-                      onClick={handleCancel}
-                    >
-                      <i className="fa-regular fa-xmark"></i>
-                    </button>
-                  ))}
+                {progress < 100 && progress > 0 && (
+                  <button
+                    className="btn btn-danger btn-slim"
+                    onClick={handleCancel}
+                  >
+                    <i className="fa-regular fa-xmark"></i>
+                  </button>
+                )}
+                {progress === 100 && (
+                  <i className="fa-solid fa-circle-check"></i>
+                )}
               </div>
             )}
             <div className="form-input form-btns">
