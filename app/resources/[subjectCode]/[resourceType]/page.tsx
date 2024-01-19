@@ -263,16 +263,10 @@ const Page = ({ params }: PageProps) => {
                       ? openLink(resource.url)
                       : handleDownload(resource.file)
                   }
+                  title={resource.title}
                 >
                   <div className="section-card-upper">
                     <div className="section-card-upper-left">
-                      {/* <i
-                        className={`fa-solid ${
-                          resourceType === "link" || resourceType === "moocs"
-                            ? "fa-arrow-up-right-from-square"
-                            : "fa-file"
-                        } `}
-                      ></i> */}
                       <Image
                         src={`/icons/${
                           resourceType === "link" || resourceType === "moocs"
