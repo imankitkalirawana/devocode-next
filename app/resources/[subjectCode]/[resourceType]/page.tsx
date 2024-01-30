@@ -267,7 +267,7 @@ const Page = ({ params }: PageProps) => {
                       ? openLink(resource.url)
                       : openFile(resource.file)
                   }
-                  title={resource.title}
+                  title={`Title: ${resource.title}\nDescription: ${resource.description}`}
                 >
                   <div className="section-card-upper">
                     <div className="section-card-upper-left">
