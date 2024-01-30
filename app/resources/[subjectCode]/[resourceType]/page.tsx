@@ -185,10 +185,12 @@ const Page = ({ params }: PageProps) => {
 
   // sort resources with title
   resources.sort((a, b) => {
-    if (a.title < b.title) {
+    const titleA = a.title.toLowerCase();
+    const titleB = b.title.toLowerCase();
+    if (titleA < titleB) {
       return -1;
     }
-    if (a.title > b.title) {
+    if (titleA > titleB) {
       return 1;
     }
     return 0;
