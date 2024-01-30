@@ -76,7 +76,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 225px;
+  max-width: 200px;
 }
 
 .section-card .btn {
@@ -116,6 +116,8 @@
   padding: 8px 12px;
   font-weight: 400;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .section-dropdown-item:hover {
