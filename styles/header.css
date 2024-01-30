@@ -57,7 +57,7 @@
   font-weight: 300;
   font-size: 14px;
   color: var(--faded);
-  padding: 8px 12px;
+  /* padding: 8px 12px; */
   border-radius: 9999px;
   transition: 0.3s ease;
   cursor: pointer;
@@ -73,6 +73,10 @@
 
 .list-items-item:hover i {
   transform: rotate(180deg);
+}
+
+.list-items-item a {
+  padding: 8px 12px;
 }
 
 /* dropdown */
