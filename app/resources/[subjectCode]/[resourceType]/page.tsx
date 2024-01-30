@@ -169,7 +169,18 @@ const Page = ({ params }: PageProps) => {
   };
 
   const openFile = (file: string) => {
-    window.open(`/api/file/view?filename=${file}`, "_blank");
+    // check file extension if image or pdf than open in new tab
+    const extension = file.split(".").pop();
+    if (
+      extension === "pdf" ||
+      extension === "png" ||
+      extension === "jpg" ||
+      extension === "jpeg"
+    ) {
+      window.open(`/api/file/view?filename=${file}`, "_blank");
+    } else {
+      handleDownload(file);
+    }
   };
 
   // sort resources with title
