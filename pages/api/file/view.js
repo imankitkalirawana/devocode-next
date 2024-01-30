@@ -1,4 +1,5 @@
-import aws from "aws-sdk";
+import { Readable } from "stream";
+import S3 from "aws-sdk/clients/s3";
 
 const s3 = new S3({
   accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY_ID,
@@ -19,11 +20,10 @@ export default async function handler(req, res) {
   };
 
   try {
-    const data = await s3.getObject(params).promise();
+    const { Body } = await s3.getObject(params).promise();
 
-    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
-    res.setHeader("Content-Type", data.ContentType);
-    res.send(data.Body);
+    const stream = Readable.from(Body);
+    stream.pipe(res);
   } catch (error) {
     console.error("Error fetching file from S3:", error);
     res.status(404).send("File not found");

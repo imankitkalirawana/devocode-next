@@ -168,6 +168,10 @@ const Page = ({ params }: PageProps) => {
     window.open(url, "_blank");
   };
 
+  const openFile = (file: string) => {
+    window.open(`/api/file/view?filename=${file}`, "_blank");
+  };
+
   // sort resources with title
   resources.sort((a, b) => {
     if (a.title < b.title) {
@@ -261,7 +265,7 @@ const Page = ({ params }: PageProps) => {
                   onClick={() =>
                     resourceType === "link" || resourceType === "moocs"
                       ? openLink(resource.url)
-                      : handleDownload(resource.file)
+                      : openFile(resource.file)
                   }
                   title={resource.title}
                 >
@@ -308,7 +312,6 @@ const Page = ({ params }: PageProps) => {
                           <a
                             className="section-dropdown-item"
                             onClick={() => handleDownload(resource.file)}
-                            download
                           >
                             <Image
                               src="/icons/download.svg"

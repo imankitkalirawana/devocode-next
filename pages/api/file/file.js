@@ -1,6 +1,6 @@
 import multer from "multer";
-import aws from "aws-sdk";
 import { Readable } from "stream";
+import S3 from "aws-sdk/clients/s3";
 import verifyToken from "@/middleware/verifyToken";
 
 const s3 = new S3({
