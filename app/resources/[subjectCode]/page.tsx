@@ -43,12 +43,18 @@ const Page = ({ params }: PageProps) => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
+        let cachedSubject = sessionStorage.getItem(subjectCode);
+        if (cachedSubject) {
+          setSubject(JSON.parse(cachedSubject));
+          setLoading(false);
+        }
         const response = await fetch(
           `/api/subjects/subject-code?subjectCode=${subjectCode}`
         );
         const data = await response.json();
         setLoading(false);
         setSubject(data);
+        sessionStorage.setItem(subjectCode, JSON.stringify(data));
       } catch (err) {
         console.error("Error fetching subject:", err);
       }

@@ -9,7 +9,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "./globals.css";
 import "@/styles/container.css";
 import "@/styles/section.css";
-import { useEffect } from "react";
 
 export const metadata: Metadata = {
   title: "Devocode By Divinely Developer",
