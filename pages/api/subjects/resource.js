@@ -10,7 +10,6 @@ import Syllabus from "@/models/Syllabus";
 import { connectDB } from "@/utils/db";
 import verifyToken from "@/middleware/verifyToken";
 
-
 connectDB();
 
 const resource = async (req, res) => {
@@ -67,30 +66,39 @@ const resource = async (req, res) => {
       }
       if (resourceType === "ca") {
         const ca = await Ca.find({ subject: subjectId });
+        ca.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(ca);
       } else if (resourceType === "endterm") {
         const endterm = await Endterm.find({ subject: subjectId });
+        endterm.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(endterm);
       } else if (resourceType === "link") {
         const link = await Link.find({ subject: subjectId });
+        link.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(link);
       } else if (resourceType === "mcqs") {
         const mcqs = await Mcqs.find({ subject: subjectId });
+        mcqs.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(mcqs);
       } else if (resourceType === "midterm") {
         const midterm = await Midterm.find({ subject: subjectId });
+        midterm.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(midterm);
       } else if (resourceType === "moocs") {
         const moocs = await Moocs.find({ subject: subjectId });
+        moocs.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(moocs);
       } else if (resourceType === "notes") {
         const notes = await Notes.find({ subject: subjectId });
+        notes.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(notes);
       } else if (resourceType === "reference") {
         const reference = await Reference.find({ subject: subjectId });
+        reference.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(reference);
       } else if (resourceType === "syllabus") {
         const syllabus = await Syllabus.find({ subject: subjectId });
+        syllabus.sort((a, b) => a.title.localeCompare(b.title));
         res.status(200).json(syllabus);
       } else {
         res.status(400).json({

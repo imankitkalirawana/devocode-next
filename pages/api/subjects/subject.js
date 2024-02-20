@@ -19,6 +19,8 @@ export default cors(async (req, res) => {
         }
       } else {
         const subjects = await Subject.find();
+        // sort subjects by code
+        subjects.sort((a, b) => a.code.localeCompare(b.code));
         res.status(200).json(subjects);
       }
     } else {

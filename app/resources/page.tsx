@@ -33,11 +33,6 @@ const Resources = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        let cachedSubjects = sessionStorage.getItem("subjects");
-        if (cachedSubjects) {
-          setSubjects(JSON.parse(cachedSubjects));
-          setLoading(false);
-        }
         const response = await axios.get("/api/subjects/subject");
         setSubjects(response.data);
         sessionStorage.setItem("subjects", JSON.stringify(response.data));

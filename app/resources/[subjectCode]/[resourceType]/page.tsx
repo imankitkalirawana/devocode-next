@@ -54,13 +54,6 @@ const Page = ({ params }: PageProps) => {
 
   const fetchResources = async (subjectId: string) => {
     try {
-      let cachedResources = sessionStorage.getItem(
-        `${subjectCode}-${resourceType}`
-      );
-      if (cachedResources) {
-        setResources(JSON.parse(cachedResources));
-        setLoading(false);
-      }
       const response = await axios.get(
         `/api/subjects/resource?subjectId=${subjectId}&resourceType=${params.resourceType}`
       );

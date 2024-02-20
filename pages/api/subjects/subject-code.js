@@ -1,6 +1,5 @@
 import Subject from "@/models/Subjects";
 import { connectDB } from "@/utils/db";
-import verifyToken from "@/middleware/verifyToken";
 connectDB();
 
 const subjectWithCode = async (req, res) => {

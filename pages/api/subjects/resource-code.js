@@ -23,7 +23,6 @@ const resourceWithCode = async () => {
         });
         return;
       }
-      //   if(resourceId)
     }
   }
 };
