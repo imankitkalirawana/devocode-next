@@ -409,6 +409,10 @@ const Page = ({ params }: PageProps) => {
                       {resource.filesize
                         ? `${parseInt(resource.filesize)}MB`
                         : ""}
+                      {/*get file extension  */}
+                      {resourceType === "link" || resourceType === "moocs"
+                        ? ""
+                        : ` (${resource.file.split(".").pop()})`}
                     </span>
                   </div>
                 </div>
