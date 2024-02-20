@@ -54,6 +54,15 @@ const Page = ({ params }: PageProps) => {
 
   const fetchResources = async (subjectId: string) => {
     try {
+      // get from session storage
+      const sessionData = sessionStorage.getItem(
+        `${subjectCode}-${resourceType}`
+      );
+      if (sessionData) {
+        setResources(JSON.parse(sessionData));
+        setLoading(false);
+        return;
+      }
       const response = await axios.get(
         `/api/subjects/resource?subjectId=${subjectId}&resourceType=${params.resourceType}`
       );
@@ -76,10 +85,11 @@ const Page = ({ params }: PageProps) => {
           .then((res) => {
             fetchResources(res.data._id);
             setSubject(res.data);
-            setLoading(false);
           });
       } catch (error) {
         console.error("Error fetching subject:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchSubject();
@@ -187,19 +197,6 @@ const Page = ({ params }: PageProps) => {
       handleDownload(file);
     }
   };
-
-  // sort resources with title
-  resources.sort((a, b) => {
-    const titleA = a.title.toLowerCase();
-    const titleB = b.title.toLowerCase();
-    if (titleA < titleB) {
-      return -1;
-    }
-    if (titleA > titleB) {
-      return 1;
-    }
-    return 0;
-  });
 
   return (
     <>

@@ -43,6 +43,13 @@ const Page = ({ params }: PageProps) => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
+        const subject = sessionStorage.getItem(subjectCode);
+        if (subject) {
+          setSubject(JSON.parse(subject));
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch(
           `/api/subjects/subject-code?subjectCode=${subjectCode}`
         );
