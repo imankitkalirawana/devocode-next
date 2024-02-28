@@ -66,7 +66,7 @@ export default async function handler(req, res) {
           Bucket: process.env.NEXT_PUBLIC_BUCKET_NAME,
           Key: filename,
         };
-
+        2;
         s3.deleteObject(deleteParams, (err) => {
           if (err) {
             console.log(err);

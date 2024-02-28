@@ -35,7 +35,6 @@ const Resources = () => {
       try {
         const response = await axios.get("/api/subjects/subject");
         setSubjects(response.data);
-        sessionStorage.setItem("subjects", JSON.stringify(response.data));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching subjects:", error);

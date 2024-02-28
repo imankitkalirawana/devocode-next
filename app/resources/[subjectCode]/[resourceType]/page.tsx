@@ -55,23 +55,12 @@ const Page = ({ params }: PageProps) => {
   const fetchResources = async (subjectId: string) => {
     try {
       // get from session storage
-      const sessionData = sessionStorage.getItem(
-        `${subjectCode}-${resourceType}`
-      );
-      if (sessionData) {
-        setResources(JSON.parse(sessionData));
-        setLoading(false);
-        return;
-      }
+
       const response = await axios.get(
         `/api/subjects/resource?subjectId=${subjectId}&resourceType=${params.resourceType}`
       );
       setResources(response.data);
       setLoading(false);
-      sessionStorage.setItem(
-        `${subjectCode}-${resourceType}`,
-        JSON.stringify(response.data)
-      );
     } catch (error) {
       console.error("Error fetching resources:", error);
     }
